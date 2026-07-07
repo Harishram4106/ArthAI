@@ -8,16 +8,16 @@ const router = Router();
 router.get('/', requireAuth, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
-    const goals = await prisma.goal.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'asc' }
-    });
-    
-    // Fetch user risk profile to determine CAGR assumption
-    const assessment = await prisma.riskAssessment.findFirst({
-      where: { userId },
-      orderBy: { createdAt: 'desc' }
-    });
+    const [goals, assessment] = await Promise.all([
+      prisma.goal.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'asc' }
+      }),
+      prisma.riskAssessment.findFirst({
+        where: { userId },
+        orderBy: { createdAt: 'desc' }
+      })
+    ]);
     const riskProfile = assessment?.profile || 'Moderate';
     
     const enrichedGoals = goals.map(g => goalsService.calculateGoalFeasibility(g, riskProfile));

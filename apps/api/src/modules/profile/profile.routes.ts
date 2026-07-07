@@ -10,21 +10,8 @@ router.get('/me', requireAuth, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
     
-    // Fetch profile from Supabase
+    // Fetch profile from Supabase (already includes user data)
     let profile = await profileService.getProfile(userId);
-    
-    // Supplement with email and name from local SQLite if Supabase record is brand new / empty
-    const localUser = await prisma.user.findUnique({
-      where: { id: userId },
-      include: { profile: true }
-    });
-    
-    if (localUser) {
-      if (!profile.email) profile.email = localUser.email;
-      if (!profile.full_name && localUser.profile) {
-        profile.full_name = localUser.profile.name;
-      }
-    }
 
     res.json(profile);
   } catch (error) {

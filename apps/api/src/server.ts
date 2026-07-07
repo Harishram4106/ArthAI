@@ -10,8 +10,16 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Global Prisma instance
-export const prisma = new PrismaClient({ log: ['error'] });
+// Enforce connection pooling parameters for serverless environments (Supavisor)
+const dbUrl = process.env.DATABASE_URL || '';
+const poolUrl = dbUrl.includes('?') 
+  ? dbUrl + '&pgbouncer=true&connection_limit=1'
+  : dbUrl + '?pgbouncer=true&connection_limit=1';
+
+export const prisma = new PrismaClient({ 
+  datasources: { db: { url: poolUrl } },
+  log: ['error'] 
+});
 
 // ── Security Headers (helmet) ──
 app.use(helmet({

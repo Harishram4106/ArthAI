@@ -8,6 +8,81 @@ class TransactionsService {
      * Derives financial snapshot metrics from transactions
      */
     async getFinancialSnapshot(userId) {
+        // Check if user has dashboard overrides in settings
+        const profile = await prisma.userProfile.findUnique({
+            where: { userId }
+        });
+        if (profile && profile.settings) {
+            try {
+                const settings = JSON.parse(profile.settings);
+                if (settings.dashboardOverrides) {
+                    const overrides = settings.dashboardOverrides;
+                    const avgMonthlyIncome = Number(overrides.avgMonthlyIncome) || 0;
+                    const avgMonthlyExpense = Number(overrides.avgMonthlyExpense) || 0;
+                    const monthlySavings = avgMonthlyIncome - avgMonthlyExpense;
+                    const investableSurplus = overrides.investableSurplus !== undefined
+                        ? Number(overrides.investableSurplus)
+                        : Math.max(0, monthlySavings);
+                    const totalInvested = Number(overrides.totalInvested) || 0;
+                    const financialHealthScore = Number(overrides.financialHealthScore) || 75;
+                    const emergencyCoverageMonths = Number(overrides.emergencyCoverageMonths) || 6;
+                    const breakdownScore = financialHealthScore;
+                    const healthBreakdown = {
+                        savingsRate: {
+                            score: breakdownScore,
+                            value: avgMonthlyIncome > 0 ? `${Math.round((monthlySavings / avgMonthlyIncome) * 100)}%` : '0%',
+                            status: breakdownScore >= 80 ? 'Excellent' : breakdownScore >= 50 ? 'Good' : 'Needs Work',
+                            explanation: 'Percentage of income saved monthly.',
+                            action: 'Adjusted via dashboard controls.'
+                        },
+                        emergencyFund: {
+                            score: breakdownScore,
+                            value: `${emergencyCoverageMonths.toFixed(1)}x`,
+                            status: breakdownScore >= 80 ? 'Excellent' : 'Needs Work',
+                            explanation: 'Months of expenses covered by liquid assets.',
+                            action: 'Adjusted via dashboard controls.'
+                        },
+                        expenseStability: {
+                            score: breakdownScore,
+                            value: '30%',
+                            status: breakdownScore >= 80 ? 'Excellent' : 'Needs Work',
+                            explanation: 'Proportion of expenses that are discretionary.',
+                            action: 'Adjusted via dashboard controls.'
+                        },
+                        goalReadiness: {
+                            score: breakdownScore,
+                            value: 'Active',
+                            status: breakdownScore >= 80 ? 'Excellent' : 'Needs Work',
+                            explanation: 'Progress across all your financial goals.',
+                            action: 'Adjusted via dashboard controls.'
+                        }
+                    };
+                    return {
+                        avgMonthlyIncome,
+                        avgMonthlyExpense,
+                        monthlySavings,
+                        recommendedBufferTopUp: Math.round(monthlySavings * 0.3),
+                        investableSurplus,
+                        spendingByCategory: overrides.spendingByCategory || {
+                            Rent: Math.round(avgMonthlyExpense * 0.35),
+                            Groceries: Math.round(avgMonthlyExpense * 0.25),
+                            Dining: Math.round(avgMonthlyExpense * 0.15),
+                            Bills: Math.round(avgMonthlyExpense * 0.15),
+                            Misc: Math.round(avgMonthlyExpense * 0.10)
+                        },
+                        financialHealthScore,
+                        healthBreakdown,
+                        emergencyCoverageMonths,
+                        totalInvested,
+                        monthChange: Math.round(monthlySavings * 0.4),
+                        monthChangePct: totalInvested > 0 ? Number(((Math.round(monthlySavings * 0.4) / totalInvested) * 100).toFixed(2)) : 0
+                    };
+                }
+            }
+            catch (e) {
+                console.error('Failed to parse dashboard overrides', e);
+            }
+        }
         const transactions = await prisma.transaction.findMany({
             where: { userId },
             orderBy: { date: 'asc' }

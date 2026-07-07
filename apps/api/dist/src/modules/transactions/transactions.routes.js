@@ -4,6 +4,7 @@ const express_1 = require("express");
 const server_1 = require("../../server");
 const auth_routes_1 = require("../auth/auth.routes");
 const transactions_service_1 = require("./transactions.service");
+const audit_service_1 = require("../audit/audit.service");
 const router = (0, express_1.Router)();
 const transactionsService = new transactions_service_1.TransactionsService();
 router.get('/summary', auth_routes_1.requireAuth, async (req, res) => {
@@ -26,15 +27,7 @@ router.post('/upload-csv', auth_routes_1.requireAuth, async (req, res) => {
             return;
         }
         const count = await transactionsService.ingestCsv(userId, csvData);
-        await server_1.prisma.auditLog.create({
-            data: {
-                userId,
-                event: 'Transactions Ingested',
-                category: 'System',
-                details: JSON.stringify({ recordCount: count }),
-                hash: 'hash_' + Date.now()
-            }
-        });
+        await (0, audit_service_1.createAuditLog)(userId, 'Transactions Ingested', 'System', { recordCount: count });
         res.json({ message: `Successfully ingested ${count} transactions` });
     }
     catch (error) {

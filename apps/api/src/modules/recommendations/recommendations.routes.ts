@@ -56,18 +56,20 @@ router.post('/generate', requireAuth, async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const { surplus } = req.body;
     
-    // Get latest risk assessment
-    const assessment = await prisma.riskAssessment.findFirst({
-      where: { userId },
-      orderBy: { createdAt: 'desc' }
-    });
+    // Get latest risk assessment and products concurrently
+    const [assessment, products] = await Promise.all([
+      prisma.riskAssessment.findFirst({
+        where: { userId },
+        orderBy: { createdAt: 'desc' }
+      }),
+      prisma.productFact.findMany()
+    ]);
 
     if (!assessment) {
       res.status(400).json({ error: 'Risk assessment not completed' });
       return;
     }
 
-    const products = await prisma.productFact.findMany();
     const allocations = computeAllocation(surplus, assessment.profile, products);
 
     const portfolio = await prisma.portfolioRecommendation.create({

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const server_1 = require("../../server");
 const auth_routes_1 = require("../auth/auth.routes");
+const audit_service_1 = require("../audit/audit.service");
 const router = (0, express_1.Router)();
 router.get('/slots', auth_routes_1.requireAuth, (req, res) => {
     // Return dummy available slots
@@ -30,15 +31,7 @@ router.post('/', auth_routes_1.requireAuth, async (req, res) => {
                 status: 'Confirmed'
             }
         });
-        await server_1.prisma.auditLog.create({
-            data: {
-                userId,
-                event: 'Human Advisor Appointment Booked',
-                category: 'System',
-                details: JSON.stringify({ appointmentId: appointment.id, type, advisorName }),
-                hash: 'hash_' + Date.now()
-            }
-        });
+        await (0, audit_service_1.createAuditLog)(userId, 'Human Advisor Appointment Booked', 'System', { appointmentId: appointment.id, type, advisorName });
         res.json(appointment);
     }
     catch (error) {

@@ -12,7 +12,7 @@ import type { Language } from '../types';
 export function ProfileScreen() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  
+
   const lang = useAppStore(state => state.language);
   const setLanguage = useAppStore(state => state.setLanguage);
   const user = useAppStore(state => state.user);
@@ -31,18 +31,6 @@ export function ProfileScreen() {
     queryFn: async () => {
       const res = await apiClient.get('/profile/me');
       return res.data;
-    },
-    placeholderData: {
-      full_name: user?.name || 'Loading...',
-      email: user?.email || 'Loading...',
-      phone: '-',
-      date_of_birth: '-',
-      city: '-',
-      country: '-',
-      occupation: '-',
-      monthly_income_range: '-',
-      investment_experience: '-',
-      preferred_currency: 'INR',
     }
   });
 
@@ -68,9 +56,6 @@ export function ProfileScreen() {
     queryFn: async () => {
       const res = await apiClient.get('/risk/latest');
       return res.data;
-    },
-    placeholderData: {
-      profile: 'Moderate' // Default fallback to prevent UI jumps
     }
   });
 
@@ -154,7 +139,7 @@ export function ProfileScreen() {
   return (
     <div className="screen-enter px-4 py-4 pb-4 space-y-4">
       {/* Top Navigation */}
-      <button 
+      <button
         onClick={() => navigate('/home')}
         className="flex items-center gap-1 text-xs font-bold text-[#003366] hover:underline cursor-pointer"
       >
@@ -163,7 +148,7 @@ export function ProfileScreen() {
 
       <div className="flex flex-col items-center relative">
         <div className="absolute right-0 top-0">
-          <button 
+          <button
             onClick={() => navigate('/settings')}
             className="p-2 bg-white rounded-full text-gray-500 shadow-sm border border-gray-100 hover:text-[#003366] transition-colors"
           >
@@ -182,7 +167,7 @@ export function ProfileScreen() {
             <Building2 size={16} className="text-[#003366]" />
             <h2 className="text-xs font-bold text-gray-900 uppercase tracking-wider">Profile Details</h2>
           </div>
-          <button 
+          <button
             onClick={() => {
               if (isEditingProfile) {
                 updateProfileMutation.mutate(profileForm);
@@ -205,18 +190,18 @@ export function ProfileScreen() {
           <div className="space-y-3 text-xs">
             <div>
               <label className="block text-gray-500 font-semibold mb-1">Full Name</label>
-              <input 
-                type="text" 
-                value={profileForm.full_name || ''} 
+              <input
+                type="text"
+                value={profileForm.full_name || ''}
                 onChange={e => setProfileForm({ ...profileForm, full_name: e.target.value })}
                 className="w-full bg-gray-50 p-2 rounded border border-gray-200 outline-none"
               />
             </div>
             <div>
               <label className="block text-gray-500 font-semibold mb-1">Email</label>
-              <input 
-                type="email" 
-                value={profileForm.email || ''} 
+              <input
+                type="email"
+                value={profileForm.email || ''}
                 disabled
                 className="w-full bg-gray-100 p-2 rounded border border-gray-200 text-gray-500 outline-none cursor-not-allowed"
               />
@@ -224,18 +209,18 @@ export function ProfileScreen() {
             <div className="flex gap-2">
               <div className="flex-1">
                 <label className="block text-gray-500 font-semibold mb-1">Phone</label>
-                <input 
-                  type="text" 
-                  value={profileForm.phone || ''} 
+                <input
+                  type="text"
+                  value={profileForm.phone || ''}
                   onChange={e => setProfileForm({ ...profileForm, phone: e.target.value })}
                   className="w-full bg-gray-50 p-2 rounded border border-gray-200 outline-none"
                 />
               </div>
               <div className="flex-1">
                 <label className="block text-gray-500 font-semibold mb-1">Date of Birth</label>
-                <input 
-                  type="date" 
-                  value={profileForm.date_of_birth || ''} 
+                <input
+                  type="date"
+                  value={profileForm.date_of_birth || ''}
                   onChange={e => setProfileForm({ ...profileForm, date_of_birth: e.target.value })}
                   className="w-full bg-gray-50 p-2 rounded border border-gray-200 outline-none"
                 />
@@ -244,18 +229,18 @@ export function ProfileScreen() {
             <div className="flex gap-2">
               <div className="flex-1">
                 <label className="block text-gray-500 font-semibold mb-1">City</label>
-                <input 
-                  type="text" 
-                  value={profileForm.city || ''} 
+                <input
+                  type="text"
+                  value={profileForm.city || ''}
                   onChange={e => setProfileForm({ ...profileForm, city: e.target.value })}
                   className="w-full bg-gray-50 p-2 rounded border border-gray-200 outline-none"
                 />
               </div>
               <div className="flex-1">
                 <label className="block text-gray-500 font-semibold mb-1">Country</label>
-                <input 
-                  type="text" 
-                  value={profileForm.country || ''} 
+                <input
+                  type="text"
+                  value={profileForm.country || ''}
                   onChange={e => setProfileForm({ ...profileForm, country: e.target.value })}
                   className="w-full bg-gray-50 p-2 rounded border border-gray-200 outline-none"
                 />
@@ -263,9 +248,9 @@ export function ProfileScreen() {
             </div>
             <div>
               <label className="block text-gray-500 font-semibold mb-1">Occupation</label>
-              <input 
-                type="text" 
-                value={profileForm.occupation || ''} 
+              <input
+                type="text"
+                value={profileForm.occupation || ''}
                 onChange={e => setProfileForm({ ...profileForm, occupation: e.target.value })}
                 className="w-full bg-gray-50 p-2 rounded border border-gray-200 outline-none"
               />
@@ -273,8 +258,8 @@ export function ProfileScreen() {
             <div className="flex gap-2">
               <div className="flex-1">
                 <label className="block text-gray-500 font-semibold mb-1">Monthly Income</label>
-                <select 
-                  value={profileForm.monthly_income_range || ''} 
+                <select
+                  value={profileForm.monthly_income_range || ''}
                   onChange={e => setProfileForm({ ...profileForm, monthly_income_range: e.target.value })}
                   className="w-full bg-gray-50 p-2 rounded border border-gray-200 outline-none"
                 >
@@ -287,8 +272,8 @@ export function ProfileScreen() {
               </div>
               <div className="flex-1">
                 <label className="block text-gray-500 font-semibold mb-1">Investment Exp.</label>
-                <select 
-                  value={profileForm.investment_experience || ''} 
+                <select
+                  value={profileForm.investment_experience || ''}
                   onChange={e => setProfileForm({ ...profileForm, investment_experience: e.target.value })}
                   className="w-full bg-gray-50 p-2 rounded border border-gray-200 outline-none"
                 >
@@ -301,8 +286,8 @@ export function ProfileScreen() {
             </div>
             <div>
               <label className="block text-gray-500 font-semibold mb-1">Preferred Currency</label>
-              <select 
-                value={profileForm.preferred_currency || 'INR'} 
+              <select
+                value={profileForm.preferred_currency || 'INR'}
                 onChange={e => setProfileForm({ ...profileForm, preferred_currency: e.target.value })}
                 className="w-full bg-gray-50 p-2 rounded border border-gray-200 outline-none"
               >
@@ -334,7 +319,7 @@ export function ProfileScreen() {
           </div>
         )}
       </Card>
-      
+
       {/* Upload Statement Card */}
       <Card>
         <div className="flex items-center gap-2 mb-2">
@@ -342,10 +327,10 @@ export function ProfileScreen() {
           <h2 className="text-xs font-bold text-gray-900 uppercase tracking-wider">Upload Bank Statement (CSV)</h2>
         </div>
         <p className="text-xs text-gray-600 mb-3">Upload your IDBI Bank CSV statement to update your financial summary.</p>
-        
+
         <label className={`w-full py-2.5 bg-emerald-50 text-emerald-700 rounded-full font-bold text-xs flex items-center justify-center gap-2 border border-emerald-200 cursor-pointer hover:bg-emerald-100 transition-colors ${uploadStatementMutation.isPending ? 'opacity-50 pointer-events-none' : ''}`}>
-           {uploadStatementMutation.isPending ? 'Processing...' : 'Select CSV File'}
-           <input type="file" accept=".csv" className="hidden" onChange={handleFileUpload} />
+          {uploadStatementMutation.isPending ? 'Processing...' : 'Select CSV File'}
+          <input type="file" accept=".csv" className="hidden" onChange={handleFileUpload} />
         </label>
       </Card>
 
@@ -396,7 +381,7 @@ export function ProfileScreen() {
           <h2 className="text-xs font-bold text-gray-900 uppercase tracking-wider">Advisory Summary Report</h2>
         </div>
         <p className="text-xs text-gray-600 mb-3">Download a comprehensive Markdown report of your financial health, goals, and risk profile.</p>
-        <button 
+        <button
           onClick={async () => {
             try {
               const res = await apiClient.get('/reports/summary', { responseType: 'blob' });
@@ -437,9 +422,9 @@ export function ProfileScreen() {
       </Card>
 
       {/* Language Switcher moved to Settings */}
-      
+
       {/* Logout */}
-      <button 
+      <button
         onClick={handleLogout}
         className="w-full py-3 bg-red-50 text-red-600 rounded-full font-bold text-xs flex items-center justify-center gap-2 cursor-pointer hover:bg-red-100 transition-colors"
       >
@@ -468,7 +453,7 @@ export function ProfileScreen() {
                 <label className="block text-gray-500 font-semibold mb-1">Consultation Mode</label>
                 <div className="flex gap-2">
                   {(['Video Call', 'Branch Visit'] as const).map(mode => (
-                    <button 
+                    <button
                       key={mode}
                       onClick={() => setAppType(mode)}
                       className={`flex-1 py-2 rounded-xl font-bold border cursor-pointer ${appType === mode ? 'bg-[#003366] text-white border-[#003366]' : 'bg-gray-50 text-gray-700 border-gray-200'}`}
@@ -481,9 +466,9 @@ export function ProfileScreen() {
 
               <div>
                 <label className="block text-gray-500 font-semibold mb-1">Preferred Date</label>
-                <input 
-                  type="date" 
-                  value={appDate} 
+                <input
+                  type="date"
+                  value={appDate}
                   onChange={e => setAppDate(e.target.value)}
                   className="w-full bg-gray-50 p-2.5 rounded-xl border border-gray-200 font-semibold text-gray-800 outline-none"
                 />
@@ -491,8 +476,8 @@ export function ProfileScreen() {
 
               <div>
                 <label className="block text-gray-500 font-semibold mb-1">Time Slot</label>
-                <select 
-                  value={appTime} 
+                <select
+                  value={appTime}
                   onChange={e => setAppTime(e.target.value)}
                   className="w-full bg-gray-50 p-2.5 rounded-xl border border-gray-200 font-semibold text-gray-800 outline-none"
                 >
@@ -505,13 +490,13 @@ export function ProfileScreen() {
             </div>
 
             <div className="flex gap-2 pt-2">
-              <button 
+              <button
                 onClick={() => setShowAppointmentModal(false)}
                 className="flex-1 py-2.5 text-xs font-bold text-gray-500 rounded-full border border-gray-200 hover:bg-gray-50 cursor-pointer"
               >
                 Cancel
               </button>
-              <PillButton 
+              <PillButton
                 onClick={handleBookAppointment}
                 className="flex-1 text-xs font-bold"
                 disabled={bookAppointmentMutation.isPending}

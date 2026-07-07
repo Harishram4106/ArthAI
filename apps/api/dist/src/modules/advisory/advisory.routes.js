@@ -4,6 +4,7 @@ const express_1 = require("express");
 const server_1 = require("../../server");
 const auth_routes_1 = require("../auth/auth.routes");
 const transactions_service_1 = require("../transactions/transactions.service");
+const audit_service_1 = require("../audit/audit.service");
 const router = (0, express_1.Router)();
 const transactionsService = new transactions_service_1.TransactionsService();
 function generateDeterministicResponse(message, context) {
@@ -140,18 +141,10 @@ router.post('/message', auth_routes_1.requireAuth, async (req, res) => {
         });
         // Audit compliance logging
         if (aiResponse.needs_human_advisor || aiResponse.is_product_recommendation) {
-            await server_1.prisma.auditLog.create({
-                data: {
-                    userId,
-                    event: aiResponse.needs_human_advisor ? 'Human Escalation Triggered' : 'AI Product Recommendation Provided',
-                    category: 'Advice',
-                    details: JSON.stringify({
-                        threadId: activeThreadId,
-                        messageId: botMsg.id,
-                        rationale: aiResponse.rationale
-                    }),
-                    hash: 'hash_' + Date.now()
-                }
+            await (0, audit_service_1.createAuditLog)(userId, aiResponse.needs_human_advisor ? 'Human Escalation Triggered' : 'AI Product Recommendation Provided', 'Advice', {
+                threadId: activeThreadId,
+                messageId: botMsg.id,
+                rationale: aiResponse.rationale
             });
         }
         res.json({

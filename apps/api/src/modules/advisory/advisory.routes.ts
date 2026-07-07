@@ -105,14 +105,15 @@ router.post('/message', requireAuth, async (req: Request, res: Response) => {
       return;
     }
 
-    // Get context
-    const assessment = await prisma.riskAssessment.findFirst({
-      where: { userId },
-      orderBy: { createdAt: 'desc' }
-    });
-
-    const snapshot = await transactionsService.getFinancialSnapshot(userId);
-    const goalsCount = await prisma.goal.count({ where: { userId } });
+    // Get context concurrently
+    const [assessment, snapshot, goalsCount] = await Promise.all([
+      prisma.riskAssessment.findFirst({
+        where: { userId },
+        orderBy: { createdAt: 'desc' }
+      }),
+      transactionsService.getFinancialSnapshot(userId),
+      prisma.goal.count({ where: { userId } })
+    ]);
 
     let context = {
       profile: assessment?.profile || 'Moderate',

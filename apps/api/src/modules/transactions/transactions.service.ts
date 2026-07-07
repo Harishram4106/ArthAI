@@ -84,10 +84,15 @@ export class TransactionsService {
       }
     }
 
-    const transactions = await prisma.transaction.findMany({
-      where: { userId },
-      orderBy: { date: 'asc' }
-    });
+    const [transactions, goals] = await Promise.all([
+      prisma.transaction.findMany({
+        where: { userId },
+        orderBy: { date: 'asc' }
+      }),
+      prisma.goal.findMany({
+        where: { userId }
+      })
+    ]);
 
     let totalIncome = 0;
     let totalExpense = 0;
@@ -116,11 +121,6 @@ export class TransactionsService {
     // For demo, we just use a flat ratio
     const recommendedBufferTopUp = Math.round(monthlySavings * 0.3);
     const investableSurplus = monthlySavings > 0 ? monthlySavings - recommendedBufferTopUp : 0;
-
-    // Fetch Goals to calculate Goal Readiness
-    const goals = await prisma.goal.findMany({
-      where: { userId }
-    });
 
     // 1. Savings Rate Score
     let savingsRateScore = 0;

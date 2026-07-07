@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const server_1 = require("../../server");
 const auth_routes_1 = require("../auth/auth.routes");
+const audit_service_1 = require("../audit/audit.service");
 const router = (0, express_1.Router)();
 function computeAllocation(surplus, profile, products) {
     const getP = (tag) => products.find(p => p.tag === tag);
@@ -72,15 +73,7 @@ router.post('/generate', auth_routes_1.requireAuth, async (req, res) => {
             include: { items: { include: { product: true } } }
         });
         // Write to audit log
-        await server_1.prisma.auditLog.create({
-            data: {
-                userId,
-                event: 'Portfolio Recommendation Generated',
-                category: 'Advice',
-                details: JSON.stringify({ profile: assessment.profile, surplus, itemsCount: allocations.length }),
-                hash: 'hash_' + Date.now()
-            }
-        });
+        await (0, audit_service_1.createAuditLog)(userId, 'Portfolio Recommendation Generated', 'Advice', { profile: assessment.profile, surplus, itemsCount: allocations.length });
         res.json(portfolio);
     }
     catch (error) {
@@ -117,15 +110,7 @@ router.post('/consent', auth_routes_1.requireAuth, async (req, res) => {
                 recommendationId: portfolioId
             }
         });
-        await server_1.prisma.auditLog.create({
-            data: {
-                userId,
-                event: 'Recommendation Plan Consented',
-                category: 'Consent',
-                details: JSON.stringify({ portfolioId }),
-                hash: 'hash_' + Date.now()
-            }
-        });
+        await (0, audit_service_1.createAuditLog)(userId, 'Recommendation Plan Consented', 'Consent', { portfolioId });
         res.json({ success: true });
     }
     catch (error) {

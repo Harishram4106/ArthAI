@@ -6,6 +6,7 @@ exports.scoreToProfile = scoreToProfile;
 const express_1 = require("express");
 const server_1 = require("../../server");
 const auth_routes_1 = require("../auth/auth.routes");
+const audit_service_1 = require("../audit/audit.service");
 const router = (0, express_1.Router)();
 exports.riskQuestions = [
     {
@@ -107,15 +108,7 @@ router.post('/submit', auth_routes_1.requireAuth, async (req, res) => {
             }
         });
         // Write to audit log
-        await server_1.prisma.auditLog.create({
-            data: {
-                userId,
-                event: 'Risk Profile Assessed',
-                category: 'Risk',
-                details: JSON.stringify({ score, profile }),
-                hash: 'hash_' + Date.now()
-            }
-        });
+        await (0, audit_service_1.createAuditLog)(userId, 'Risk Profile Assessed', 'Risk', { score, profile });
         res.json(assessment);
     }
     catch (error) {
