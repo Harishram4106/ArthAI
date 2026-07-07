@@ -1,6 +1,5 @@
-import { PrismaClient, Transaction } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { Transaction } from '@prisma/client';
+import { prisma } from '../../server';
 
 export class TransactionsService {
   /**
