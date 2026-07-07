@@ -11,10 +11,10 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 // Enforce connection pooling parameters for serverless environments (Supavisor)
-const dbUrl = process.env.DATABASE_URL || '';
-const poolUrl = dbUrl.includes('?') 
-  ? dbUrl + '&pgbouncer=true&connection_limit=1'
-  : dbUrl + '?pgbouncer=true&connection_limit=1';
+const dbUrl = process.env.DATABASE_URL || 'postgresql://dummy:dummy@dummy:5432/dummy';
+const poolUrl = dbUrl.includes('pgbouncer=true') 
+  ? dbUrl 
+  : (dbUrl.includes('?') ? dbUrl + '&pgbouncer=true&connection_limit=1' : dbUrl + '?pgbouncer=true&connection_limit=1');
 
 export const prisma = new PrismaClient({ 
   datasources: { db: { url: poolUrl } },
