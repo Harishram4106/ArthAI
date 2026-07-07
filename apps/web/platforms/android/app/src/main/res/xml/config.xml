@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.idbi.disha" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Disha – AI Wealth Advisor</name>
+    <description>
+        AI-powered wealth advisory application integrated into IDBI Bank mobile banking for the IDBI Innovate Hackathon 2026.
+    </description>
+    <author email="dev@idbi.com" href="https://www.idbibank.in">
+        IDBI Innovate Development Team
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <icon src="res/icon/android/icon.png" />
+    <allow-intent href="market:*" />
+    <icon density="ldpi" src="res/icon/android/icon.png" />
+    <icon density="mdpi" src="res/icon/android/icon.png" />
+    <icon density="hdpi" src="res/icon/android/icon.png" />
+    <icon density="xhdpi" src="res/icon/android/icon.png" />
+    <icon density="xxhdpi" src="res/icon/android/icon.png" />
+    <icon density="xxxhdpi" src="res/icon/android/icon.png" />
+    <preference name="loglevel" value="DEBUG" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="Orientation" value="portrait" />
+    <preference name="Fullscreen" value="false" />
+    <preference name="BackgroundColor" value="0xff003366" />
+    <preference name="StatusBarStyle" value="lightcontent" />
+    <preference name="StatusBarBackgroundColor" value="#002B54" />
+    <preference name="AndroidPersistentFileLocation" value="Compatibility" />
+    <preference name="android-minSdkVersion" value="24" />
+    <preference name="android-targetSdkVersion" value="34" />
+    <preference name="android-build-tools" value="35.0.0" />
+</widget>
