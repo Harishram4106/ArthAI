@@ -68,9 +68,9 @@ router.post('/register', async (req: Request, res: Response) => {
         profile: user.profile
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[register]', error);
-    res.status(500).json({ error: 'Failed to create account.' });
+    res.status(500).json({ error: 'Failed to create account. Details: ' + (error.message || String(error)) });
   }
 });
 
@@ -113,9 +113,9 @@ router.post('/login', async (req: Request, res: Response) => {
         profile: user.profile
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[login]', error);
-    res.status(500).json({ error: 'Internal server error.' });
+    res.status(500).json({ error: 'Failed to login. Details: ' + (error.message || String(error)) });
   }
 });
 
