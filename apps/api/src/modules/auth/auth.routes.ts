@@ -142,8 +142,8 @@ router.post('/demo-login', async (req: Request, res: Response) => {
         profile: user.profile
       }
     });
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error.' });
+  } catch (error: any) {
+    res.status(500).json({ error: 'Internal server error: ' + (error.message || String(error)) });
   }
 });
 
