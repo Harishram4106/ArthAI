@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.idbi.disha" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Disha – AI Wealth Advisor</name>
+<widget id="com.idbi.arth" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Arth – AI Wealth Advisor</name>
     <description>
         AI-powered wealth advisory application integrated into IDBI Bank mobile banking for the IDBI Innovate Hackathon 2026.
     </description>
